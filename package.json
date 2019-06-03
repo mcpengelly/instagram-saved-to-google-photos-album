@@ -1,21 +1,17 @@
 {
-  "name": "instagram-saved-posts",
+  "name": "instagram-saved-posts-images",
   "version": "1.0.0",
-  "description": "Get saved posts from Instagram",
+  "description": "Script for getting saved post images from Instagram",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
-  "author": "Pietro Caselani",
+  "author": "Matt Pengelly",
   "license": "MIT",
   "dependencies": {
-    "bluebird": "^3.5.1",
-    "dotenv": "^4.0.0",
-    "instagram-private-api": "git+https://github.com/huttarichard/instagram-private-api.git"
-  },
-  "devDependencies": {
-    "eslint": "^4.9.0",
-    "eslint-plugin-import": "^2.8.0",
-    "eslint-config-airbnb-base": "^12.1.0"
+    "gapi-client": "0.0.3",
+    "google-auth-library": "^3.1.2",
+    "googleapis": "^39.2.0",
+    "instagram-private-api": "^0.10.1"
   }
 }
