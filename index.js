@@ -1,33 +1,54 @@
-import { IgApiClient } from "./src";
-import { sample } from "lodash";
-const ig = new IgApiClient();
+const IG_API = require("instagram-private-api");
+const _ = require("lodash");
+const fetch = require("node-fetch");
+const fs = require("fs");
+// const axios = require("axios");
+
+const ig = new IG_API.IgApiClient();
+const http = require("https");
+
 // You must generate device id's before login.
 // Id's generated based on seed
 // So if you pass the same value as first argument - the same id's are generated every time
 ig.state.generateDevice(process.env.IG_USERNAME);
-// Optionally you can setup proxy url
-ig.state.proxyUrl = process.env.IG_PROXY;
+
 (async () => {
-  // Execute all requests prior to authorization in the real Android application
-  // Not required but recommended
-  await ig.simulate.preLoginFlow();
+  // login
   const loggedInUser = await ig.account.login(process.env.IG_USERNAME, process.env.IG_PASSWORD);
+
   // The same as preLoginFlow()
   // Optionally wrap it to process.nextTick so we dont need to wait ending of this bunch of requests
   process.nextTick(async () => await ig.simulate.postLoginFlow());
-  // Create UserFeed instance to get loggedInUser's posts
-  const userFeed = ig.feed.user(loggedInUser.pk);
-  const myPostsFirstPage = await userFeed.items();
-  // All the feeds are auto-paginated, so you just need to call .items() sequentially to get next page
-  const myPostsSecondPage = await userFeed.items();
-  await ig.media.like({
-    // Like our first post from first page or first post from second page randomly
-    mediaId: sample([myPostsFirstPage[0].id, myPostsSecondPage[0].id]),
-    moduleInfo: {
-      module_name: "profile",
-      user_id: loggedInUser.pk,
-      username: loggedInUser.username
-    },
-    d: sample([0, 1])
+
+  // get saved posts
+  const savedFeed = ig.feed.saved();
+  const mySavedPosts = await savedFeed.items();
+
+  let url;
+
+  let count = 0;
+  // grab all image urls from a batch of saved posts
+  const savedImageURLS = mySavedPosts
+    .map(savedPost => {
+      if (savedPost.media.carousel_media) {
+        return savedPost.media.carousel_media[0].url;
+      } else if (savedPost.media.image_versions2 && savedPost.media.image_versions2.candidates) {
+        return savedPost.media.image_versions2.candidates[0].url;
+      }
+    })
+    .filter(item => item);
+
+  console.log(savedImageURLS);
+
+  savedImageURLS.forEach(url => {
+    const image = fs.createWriteStream(`images/image-${count++}.png`);
+    // fetch(url, res => {
+    //   console.log(res);
+    //   res.pipe(image);
+    // });
+    const request = http.get(url, response => {
+      console.log("response", response);
+      response.pipe(image);
+    });
   });
 })();
