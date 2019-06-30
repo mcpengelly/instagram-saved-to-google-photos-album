@@ -1,11 +1,9 @@
 const IG_API = require("instagram-private-api");
-const _ = require("lodash");
-const fetch = require("node-fetch");
+const { flatten } = require("lodash");
 const fs = require("fs");
-// const axios = require("axios");
+const http = require("https");
 
 const ig = new IG_API.IgApiClient();
-const http = require("https");
 
 // You must generate device id's before login.
 // Id's generated based on seed
@@ -22,9 +20,8 @@ ig.state.generateDevice(process.env.IG_USERNAME);
 
   // get saved posts
   const savedFeed = ig.feed.saved();
-  const mySavedPosts = await savedFeed.items();
-
-  let url;
+  let mySavedPosts = await Promise.all([await savedFeed.items(), await savedFeed.items()]);
+  mySavedPosts = _.flatten(mySavedPosts);
 
   let count = 0;
   // grab all image urls from a batch of saved posts
@@ -38,16 +35,10 @@ ig.state.generateDevice(process.env.IG_USERNAME);
     })
     .filter(item => item);
 
-  console.log(savedImageURLS);
-
+  // fetch images from image urls and save them to disk
   savedImageURLS.forEach(url => {
     const image = fs.createWriteStream(`images/image-${count++}.png`);
-    // fetch(url, res => {
-    //   console.log(res);
-    //   res.pipe(image);
-    // });
     const request = http.get(url, response => {
-      console.log("response", response);
       response.pipe(image);
     });
   });
