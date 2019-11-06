@@ -1,0 +1,7 @@
+{
+  "web": {
+    "client_id": "YOU CLIENT ID- you can download the contents of this file from google oauth APIs",
+    "client_secret": "YOUR CLIENT SECRET",
+    "redirect_uris": ["YOUR REDIRECT URLS"]
+  }
+}
