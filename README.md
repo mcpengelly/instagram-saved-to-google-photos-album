@@ -10,6 +10,7 @@ Motivation: wanted a fast way of downloading saved instagram pictures
 - check images directory
 
 todo:
-- integrate with google photos api
+- integrate with google photos api using oauth2
 - select a particular collection of saved photos (no available api)
 - more flexible way to get many more photos
+- more flexible way of getting un and pw
