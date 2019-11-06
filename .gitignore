@@ -1,12 +1,9 @@
 node_modules
 .DS_Store*
-.hubot_history
 .vscode
 .project
 .settings
 .idea
 .env
 env.sh
-*.iml
-*.log
-/images/*
+/images/*.png
