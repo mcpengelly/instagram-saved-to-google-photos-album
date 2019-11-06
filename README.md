@@ -3,7 +3,8 @@ This script will download a the last 40 saved photos from instagram and save the
 
 Motivation: wanted a fast way of downloading saved instagram pictures
 
-### how to
+### how to use
+- add your insta username and password to your .bash_profile
 - install dependencies `npm install`
 - run `npm start`
 - check images directory

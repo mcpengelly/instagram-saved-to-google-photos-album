@@ -21,7 +21,7 @@ ig.state.generateDevice(process.env.IG_USERNAME);
   // get saved posts
   const savedFeed = ig.feed.saved();
   let mySavedPosts = await Promise.all([await savedFeed.items(), await savedFeed.items()]);
-  mySavedPosts = _.flatten(mySavedPosts);
+  mySavedPosts = flatten(mySavedPosts);
 
   let count = 0;
   // grab all image urls from a batch of saved posts
