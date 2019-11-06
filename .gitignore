@@ -9,4 +9,4 @@ node_modules
 env.sh
 *.iml
 *.log
-/images
+/images/*
