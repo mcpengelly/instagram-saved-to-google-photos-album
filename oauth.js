@@ -86,7 +86,7 @@ async function getPhotos(client) {
     filePath: path.join(__dirname, 'images'),
     description: 'uploaded via instagram-to-googlephotos'
   }
-  const res = await photos.albums.upload(uploadInfo.albumId, uploadInfo.fileName, uploadInfo.filePath, uploadInfo.fileName);
+  const res = await photos.mediaItems.upload(uploadInfo.albumId, uploadInfo.fileName, uploadInfo.filePath, uploadInfo.fileName);
   console.log("------------");
   console.log(res);
 }
