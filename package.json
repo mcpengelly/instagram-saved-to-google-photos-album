@@ -4,7 +4,7 @@
   "description": "Script for getting saved post images from Instagram",
   "main": "index.js",
   "scripts": {
-    "start": "node oauth.js"
+    "start": "node insta.js"
   },
   "author": "Matt Pengelly",
   "license": "MIT",

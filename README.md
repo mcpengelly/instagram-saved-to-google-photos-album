@@ -1,25 +1,30 @@
-# instagram saved photo downloader
+# instagram to google photos
 
 This script will download a the last 40 saved photos from instagram then upload them to google photos via google photos oauth2 api.
 
-Motivation: wanted a fast way of downloading saved instagram pictures and uploading them to a google photos album for use on chromecast
+### Motivation: wanted a fast way of downloading saved instagram pictures and uploading them to a google photos album for use with chromecast
 
-### how to use
-
-WIP
+### How to use
 
 - add your insta username and password to your .bash_profile
+- create an app here: https://console.cloud.google.com/apis/credentials get oauth credentials, download the credentials file and paste it into oauth2.keys.json
+- enable google photos API
 - install dependencies `npm install`
 - run `npm start`
-- check images directory
--
+- check your google photos account
 
-todo:
-~~~- integrate with google photos api using oauth2~~
+### todo:
 
-- test creating a new album and then adding new images to it instead of appending new images to an existing album
-- user friendly way of authenticating with google
-- user friendly way of insta getting un and pw
-- upload images with google api
-- select a particular collection of saved photos on instagram (no available api)
-- more flexible way to get many more photos (batch download?)
+~~- integrate with google photos api using oauth2~~
+~~- user friendly way of authenticating with google~~
+~~- upload images with google api~~
+
+- user friendly way of insta getting un and pw (env vars not ideal)
+- select a particular collection of saved photos on instagram (no available api?)
+- batch downloading from insta (rate limited the way its done now)
+- batch uploading to google photos (rate limited the way its done now)
+- graceful failures
+- better separation of concerns
+- transfer other types of insta data
+- stream photos directly to google photos?
+- filter insta photos?

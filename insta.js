@@ -1,7 +1,8 @@
-const fs = require("fs");
-const http = require("https");
-const { flatten } = require("lodash");
-const IG_API = require("instagram-private-api");
+const fs = require('fs');
+const http = require('https');
+const { flatten } = require('lodash');
+const IG_API = require('instagram-private-api');
+const oauth = require('./oauth');
 
 const ig = new IG_API.IgApiClient();
 
@@ -42,4 +43,6 @@ ig.state.generateDevice(process.env.IG_USERNAME);
       response.pipe(image);
     });
   });
+
+  oauth.upload();
 })();
