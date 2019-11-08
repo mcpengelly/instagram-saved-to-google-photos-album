@@ -86,17 +86,24 @@ module.exports = {
       const albumId = await createAlbum(photosApi);
 
       const photos = getPhotos(path.join(__dirname, 'images'));
-      photos.forEach(async photo => {
-        const res = await photosApi.mediaItems.upload(
-          albumId,
-          photo,
-          path.join(__dirname, 'images', photo),
-          'uploaded via instagram-to-googlephotos',
-        );
 
-        console.log('------------');
-        console.log(res.newMediaItemResults);
-      });
+      // will be supported if open source contrib is accepted and republished
+      // const res = await photosApi.mediaItems.uploadMultiple(
+      //   albumId,
+      //   photos,
+      //   path.join(__dirname, 'images'),
+      //   'uploaded via instagram-to-googlephotos',
+      // );
+      
+      const res = await photosApi.mediaItems.upload(
+        albumId,
+        photos,
+        path.join(__dirname, 'images'),
+        'uploaded via instagram-to-googlephotos',
+      );
+
+      console.log('------------');
+      console.log(res.newMediaItemResults);
     };
     const scopes = [Photos.Scopes.READ_AND_APPEND];
 
