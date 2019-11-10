@@ -76,7 +76,7 @@ module.exports = {
       const files = fs.readdirSync(directory);
       const photos = files.filter(
         file => file.indexOf('.jpg') > -1 || file.indexOf('.jpeg') > -1 || file.indexOf('.png') > -1,
-      );
+      ).map((photo) => { name: photo })
       return photos;
     };
 
@@ -87,13 +87,11 @@ module.exports = {
 
       const photos = getPhotos(path.join(__dirname, 'images'));
 
-      // will be supported if open source contrib is accepted and republished
-      // const res = await photosApi.mediaItems.uploadMultiple(
-      //   albumId,
-      //   photos,
-      //   path.join(__dirname, 'images'),
-      //   'uploaded via instagram-to-googlephotos',
-      // );
+      const res = await photosApi.mediaItems.uploadMultiple(
+        albumId,
+        photos,
+        path.join(__dirname, 'images'),
+      );
       
       const res = await photosApi.mediaItems.upload(
         albumId,

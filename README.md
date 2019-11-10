@@ -19,8 +19,12 @@ This script will download a the last 40 saved photos from instagram then upload 
 ~~user friendly way of authenticating with google~~
 ~~upload images with google api~~
 ~~batch uploading to google photos (rate limited the way its done now)~~
+~~delete old images~~
 
-- batch downloading from insta (rate limited the way its done now)
+- batch downloading from insta (exhaust autopagination, deal with broken urls) 
+- deal with videos from insta
+- deal with saved posts with more then one post in them (cant remember if this works yet)
+
 - better separation of concerns
 - user friendly way of insta getting un and pw (env vars not ideal)
 - select a particular collection of saved photos on instagram (no available api?)
@@ -28,4 +32,5 @@ This script will download a the last 40 saved photos from instagram then upload 
 - transfer other types of insta data
 - stream photos to google photos?
 - filter insta photos?
-- delete images after download/upload
+- clean up after itself
+

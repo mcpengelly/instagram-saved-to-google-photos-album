@@ -1,7 +1,7 @@
 {
   "name": "instagram-saved-posts-images",
   "version": "1.0.0",
-  "description": "Script for getting saved post images from Instagram",
+  "description": "Script for migrating saved posts from instagram to google photos",
   "main": "index.js",
   "scripts": {
     "start": "node insta.js"
@@ -13,12 +13,13 @@
     "gapi-client": "0.0.3",
     "google-auth-library": "^3.1.2",
     "googleapis": "^44.0.0",
-    "googlephotos": "^0.2.2",
+    "googlephotos": "^0.2.3",
     "http": "^0.0.0",
     "instagram-private-api": "^1.13.0",
     "lodash": "^4.17.15",
     "node-fetch": "^2.6.0",
     "open": "^7.0.0",
+    "rimraf": "^3.0.0",
     "server-destroy": "^1.0.1",
     "url": "^0.11.0"
   }
