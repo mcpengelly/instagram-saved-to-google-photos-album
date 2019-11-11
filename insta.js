@@ -1,8 +1,7 @@
 const fs = require('fs');
-const http = require('https');
+const https = require('https');
 const { flatten } = require('lodash');
 const IG_API = require('instagram-private-api');
-const axios = require('axios');
 const oauth = require('./oauth');
 const removeDirectory = require('rimraf')
 const path = require('path')
@@ -46,6 +45,7 @@ function removeExisting(dirPath){
   const flatSavedPosts = flatten(mySavedPosts);
 
   // grab all image urls from a batch of saved posts
+  // ensure urls are valid here?
   const savedImageURLS = flatSavedPosts
     .map(savedPost => {
       if (savedPost.media.carousel_media) {
@@ -67,7 +67,7 @@ function removeExisting(dirPath){
     const image = fs.createWriteStream(`images/image-${count++}.png`);
     console.log(count)
     console.log('url', url)
-    http.get(url, response => {
+    https.get(url, response => {
       if(response.statusCode === 200){
         response.pipe(image);
       }
