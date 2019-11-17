@@ -2,16 +2,9 @@
 
 // stdlib
 const fs = require('fs');
-const path = require('path');
-const https = require('https');
-
-// local
-const oauth = require('./oauth');
-const { clearDirectory } = require('./utils');
-const { IMAGE_PATH } = require('./constants');
 
 // 3rd oarty
-const { flatten, get, has, last } = require('lodash');
+const { get, has, last } = require('lodash');
 const fetch = require('node-fetch');
 const IG_API = require('instagram-private-api');
 
@@ -82,22 +75,15 @@ async function downloadImages(urls) {
   });
 }
 
-// remove self invoking
-async function start() {
-  await igLogin();
-  await clearDirectory(IMAGE_PATH);
-
-  // get saved posts
-  const savedFeed = ig.feed.saved();
-  const savedPosts = await getAllItemsFromFeed(savedFeed);
-  const imageUrls = flatten(savedPosts.map(parseSavedPosts)).filter(url => url);
-  console.log("TCL: imageUrls.length", imageUrls.length)
-
-  await downloadImages(imageUrls);
-  // oauth.upload();
+function getSavedFeed(){
+  return ig.feed.saved()
 }
 
 module.exports = {
-  start
-}
-
+  igLogin,
+  getSavedFeed,
+  getAllItemsFromFeed,
+  parseSavedPosts,
+  downloadImages,
+  getSavedFeed
+};
