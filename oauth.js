@@ -1,14 +1,21 @@
 'use strict';
 
+// local
+const { clearDirectory } = require('./utils');
+const { IMAGE_PATH } = require('./constants');
+
+// stdlib
 const fs = require('fs');
 const path = require('path');
 const http = require('http');
 const url = require('url');
+
+// 2rd party
 const opn = require('open');
 const destroyer = require('server-destroy');
-
 const { google } = require('googleapis');
 const Photos = require('googlephotos');
+
 const plus = google.plus('v1');
 
 module.exports = {
@@ -74,9 +81,11 @@ module.exports = {
 
     const getPhotos = directory => {
       const files = fs.readdirSync(directory);
-      const photos = files.filter(
-        file => file.indexOf('.jpg') > -1 || file.indexOf('.jpeg') > -1 || file.indexOf('.png') > -1,
-      ).map((photo) => { name: photo })
+      const photos = files
+        .filter(file => file.indexOf('.jpg') > -1 || file.indexOf('.jpeg') > -1 || file.indexOf('.png') > -1)
+        .map(photo => {
+          name: photo;
+        });
       return photos;
     };
 
@@ -87,18 +96,7 @@ module.exports = {
 
       const photos = getPhotos(path.join(__dirname, 'images'));
 
-      const res = await photosApi.mediaItems.uploadMultiple(
-        albumId,
-        photos,
-        path.join(__dirname, 'images'),
-      );
-      
-      const res = await photosApi.mediaItems.upload(
-        albumId,
-        photos,
-        path.join(__dirname, 'images'),
-        'uploaded via instagram-to-googlephotos',
-      );
+      const res = await photosApi.mediaItems.uploadMultiple(albumId, photos, path.join(__dirname, 'images'));
 
       console.log('------------');
       console.log(res.newMediaItemResults);
@@ -107,6 +105,9 @@ module.exports = {
 
     authenticate(scopes)
       .then(client => uploadPhotos(client))
+      .then(async () => {
+        await clearDirectory(IMAGE_PATH);
+      })
       .catch(console.error);
   },
 };
