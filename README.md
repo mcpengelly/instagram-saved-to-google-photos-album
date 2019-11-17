@@ -17,24 +17,31 @@ This script will download a the last 40 saved photos from instagram then upload 
 ### todo:
 
 #### general:
+
 ~~delete old images~~
+
+- use typescript
 - better separation of concerns
 - graceful failures
 - stream photos from one place to the other?
 - clean up after self
 
 #### google photos:
+
 ~~integrate with google photos api using oauth2~~
 ~~user friendly way of authenticating with google~~
 ~~upload images with google api~~
 ~~batch uploading to google photos~~
+
 - even better batch uploading
 
-#### ig: 
+#### ig:
+
 ~~deal with videos from insta~~
 ~~exhaust insta paginated photos~~
 ~~deal with saved posts with more then one post in them~~
-- batch downloading from insta (fix overloading node queue, deal with broken urls) 
+
+- batch downloading from insta (fix overloading node queue, deal with broken urls)
 - user friendly way of insta getting un and pw (env vars not ideal)
 - select a particular collection of saved photos on instagram (no available api?)
 - transfer other types of insta data

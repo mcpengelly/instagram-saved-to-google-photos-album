@@ -99,7 +99,7 @@ module.exports = {
       console.log('------------');
       console.log(res.newMediaItemResults);
     };
-    
+
     const scopes = [Photos.Scopes.READ_AND_APPEND];
 
     authenticate(scopes)

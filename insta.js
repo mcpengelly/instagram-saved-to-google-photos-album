@@ -12,7 +12,7 @@ const IG_API = require('instagram-private-api');
 // So if you pass the same value as first argument - the same id's are generated every time
 const ig = new IG_API.IgApiClient();
 
-async function igLogin() {
+const igLogin = async () => {
   ig.state.generateDevice(process.env.IG_USERNAME);
 
   // login with credentials
@@ -21,9 +21,9 @@ async function igLogin() {
   // The same as preLoginFlow()
   // Optionally wrap it to process.nextTick so we dont need to wait ending of this bunch of requests
   process.nextTick(async () => await ig.simulate.postLoginFlow());
-}
+};
 
-async function getAllItemsFromFeed(feed) {
+const getAllItemsFromFeed = async feed => {
   let count = 0;
   let items = [];
   do {
@@ -31,11 +31,11 @@ async function getAllItemsFromFeed(feed) {
     items = items.concat(await feed.items());
   } while (feed.isMoreAvailable() && count < 1);
   return items;
-}
+};
 
 // grab all image urls from a batch of saved posts
 // the final candidate in the list seems to be the most reliable in terms of height and width so use that.
-function parseSavedPosts(savedPost, includeCarouselPosts = true, includeVideoPosts = false) {
+const parseSavedPosts = (savedPost, includeCarouselPosts = true, includeVideoPosts = false) => {
   const isVideoPost = has(savedPost, 'video_codec');
   const isImagePost = has(savedPost, 'image_versions2.candidates') && !isVideoPost;
   const isCarouselPost = has(savedPost, 'carousel_media') && !isVideoPost;
@@ -55,13 +55,13 @@ function parseSavedPosts(savedPost, includeCarouselPosts = true, includeVideoPos
   } else {
     console.log('unable to parse savedPost', savedPost);
   }
-}
+};
 
 // fetch images from image urls and save them to disk
 // batch? need to free up node queue for large amounts of requests
 // parralelize?
 // order is not garunteed
-async function downloadImages(urls) {
+const downloadImages = async urls => {
   let count = 1;
   urls.forEach(async function(url) {
     await fetch(url)
@@ -73,11 +73,11 @@ async function downloadImages(urls) {
         console.log(err);
       });
   });
-}
+};
 
-function getSavedFeed(){
-  return ig.feed.saved()
-}
+const getSavedFeed = () => {
+  return ig.feed.saved();
+};
 
 module.exports = {
   igLogin,
@@ -85,5 +85,5 @@ module.exports = {
   getAllItemsFromFeed,
   parseSavedPosts,
   downloadImages,
-  getSavedFeed
+  getSavedFeed,
 };
