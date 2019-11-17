@@ -11,7 +11,7 @@ const { clearDirectory } = require('./utils');
 const { IMAGE_PATH } = require('./constants');
 
 // 3rd oarty
-const { get, has, last } = require('lodash');
+const { flatten, get, has, last } = require('lodash');
 const fetch = require('node-fetch');
 const IG_API = require('instagram-private-api');
 
@@ -21,7 +21,7 @@ const ig = new IG_API.IgApiClient();
 
 async function igLogin() {
   ig.state.generateDevice(process.env.IG_USERNAME);
-  
+
   // login with credentials
   const loggedInUser = await ig.account.login(process.env.IG_USERNAME, process.env.IG_PASSWORD);
 
@@ -42,13 +42,23 @@ async function getAllItemsFromFeed(feed) {
 
 // grab all image urls from a batch of saved posts
 // the final candidate in the list seems to be the most reliable in terms of height and width so use that.
-function parseSavedPosts(savedPost) {
-  if (has(savedPost, 'carousel_media') && !has(savedPost, 'video_codec')) {
-    return last(get(savedPost, 'carousel_media')).url;
-  } else if (has(savedPost, 'image_versions2.candidates')) {
+function parseSavedPosts(savedPost, includeCarouselPosts = true, includeVideoPosts = false) {
+  const isVideoPost = has(savedPost, 'video_codec');
+  const isImagePost = has(savedPost, 'image_versions2.candidates') && !isVideoPost;
+  const isCarouselPost = has(savedPost, 'carousel_media') && !isVideoPost;
+
+  if (isImagePost) {
     return last(get(savedPost, 'image_versions2.candidates')).url;
-  } else if (has(savedPost, 'video_codec')) {
-    console.log('video posts not supported');
+  } else if (isCarouselPost) {
+    if (includeCarouselPosts) {
+      return get(savedPost, 'carousel_media').map(post => last(get(post, 'image_versions2.candidates')).url);
+    }
+    return;
+  } else if (isVideoPost) {
+    if (includeVideoPosts) {
+      return last(get(savedPost, 'image_versions2.candidates')).url;
+    }
+    return;
   } else {
     console.log('unable to parse savedPost', savedPost);
   }
@@ -57,9 +67,10 @@ function parseSavedPosts(savedPost) {
 // fetch images from image urls and save them to disk
 // batch? need to free up node queue for large amounts of requests
 // parralelize?
-async function downloadImages(urls){
+// order is not garunteed
+async function downloadImages(urls) {
   let count = 1;
-  urls.forEach(async function (url) {
+  urls.forEach(async function(url) {
     await fetch(url)
       .then(res => {
         const dest = fs.createWriteStream(`images/image-${count++}.png`);
@@ -68,22 +79,25 @@ async function downloadImages(urls){
       .catch(err => {
         console.log(err);
       });
-  })
+  });
 }
 
 // remove self invoking
-(async () => {
+async function start() {
   await igLogin();
+  await clearDirectory(IMAGE_PATH);
 
   // get saved posts
   const savedFeed = ig.feed.saved();
   const savedPosts = await getAllItemsFromFeed(savedFeed);
-  console.log('savedPosts.length', savedPosts.length);
+  const imageUrls = flatten(savedPosts.map(parseSavedPosts)).filter(url => url);
+  console.log("TCL: imageUrls.length", imageUrls.length)
 
-  // ensure urls are valid here? startsWith
-  const imageUrls = savedPosts.map(parseSavedPosts).filter(url => url);
-
-  await clearDirectory(IMAGE_PATH);
-  await downloadImages(imageUrls)
+  await downloadImages(imageUrls);
   // oauth.upload();
-})();
+}
+
+module.exports = {
+  start
+}
+

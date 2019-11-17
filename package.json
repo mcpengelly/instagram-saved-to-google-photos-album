@@ -4,7 +4,7 @@
   "description": "Script for migrating saved posts from instagram to google photos",
   "main": "index.js",
   "scripts": {
-    "start": "node insta.js"
+    "start": "node index.js"
   },
   "author": "Matt Pengelly",
   "license": "MIT",

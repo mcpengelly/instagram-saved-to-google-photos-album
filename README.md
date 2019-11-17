@@ -11,26 +11,31 @@ This script will download a the last 40 saved photos from instagram then upload 
 - enable google photos API
 - install dependencies `npm install`
 - run `npm start`
+- select/login to your google account when prompted
 - check your google photos account
 
 ### todo:
 
+#### general:
+~~delete old images~~
+- better separation of concerns
+- graceful failures
+- stream photos from one place to the other?
+- clean up after self
+
+#### google photos:
 ~~integrate with google photos api using oauth2~~
 ~~user friendly way of authenticating with google~~
 ~~upload images with google api~~
-~~batch uploading to google photos (rate limited the way its done now)~~
-~~delete old images~~
+~~batch uploading to google photos~~
+- even better batch uploading
 
-- batch downloading from insta (exhaust autopagination, deal with broken urls) 
-- deal with videos from insta
-- deal with saved posts with more then one post in them (cant remember if this works yet)
-
-- better separation of concerns
+#### ig: 
+~~deal with videos from insta~~
+~~exhaust insta paginated photos~~
+~~deal with saved posts with more then one post in them~~
+- batch downloading from insta (fix overloading node queue, deal with broken urls) 
 - user friendly way of insta getting un and pw (env vars not ideal)
 - select a particular collection of saved photos on instagram (no available api?)
-- graceful failures
 - transfer other types of insta data
-- stream photos to google photos?
 - filter insta photos?
-- clean up after itself
-

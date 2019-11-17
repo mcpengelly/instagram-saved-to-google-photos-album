@@ -84,7 +84,7 @@ module.exports = {
       const photos = files
         .filter(file => file.indexOf('.jpg') > -1 || file.indexOf('.jpeg') > -1 || file.indexOf('.png') > -1)
         .map(photo => {
-          name: photo;
+          return { name: photo };
         });
       return photos;
     };
@@ -93,14 +93,13 @@ module.exports = {
       const token = client.credentials.access_token;
       const photosApi = new Photos(token);
       const albumId = await createAlbum(photosApi);
-
       const photos = getPhotos(path.join(__dirname, 'images'));
-
       const res = await photosApi.mediaItems.uploadMultiple(albumId, photos, path.join(__dirname, 'images'));
 
       console.log('------------');
       console.log(res.newMediaItemResults);
     };
+    
     const scopes = [Photos.Scopes.READ_AND_APPEND];
 
     authenticate(scopes)
