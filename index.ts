@@ -19,5 +19,5 @@ import { clearDirectory } from './utils';
   // console.log('TCL: imageUrls.length', imageUrls.length);
 
   await downloadImages(imageUrls);
-  // oauth.upload(); disabled for now cause i broke something
+  oauth.upload();
 })();

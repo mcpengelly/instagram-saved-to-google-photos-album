@@ -1,5 +1,6 @@
 import fs from 'fs';
 import { google } from 'googleapis';
+import { AuthPlus } from 'googleapis-common';
 import Photos from 'googlephotos';
 import http from 'http';
 import opn from 'open';
@@ -79,7 +80,7 @@ export = {
       return newAlbum.id;
     };
 
-    const getPhotos = directory => {
+    const getPhotos = (directory: fs.PathLike) => {
       const files = fs.readdirSync(directory);
       const photos = files
         .filter(file => file.indexOf('.jpg') > -1 || file.indexOf('.jpeg') > -1 || file.indexOf('.png') > -1)
@@ -89,7 +90,7 @@ export = {
       return photos;
     };
 
-    const uploadPhotos = async client => {
+    const uploadPhotos = async (client /*AuthPlus['OAuth2']*/) => {
       const token = client.credentials.access_token;
       const photosApi = new Photos(token);
       const albumId = await createAlbum(photosApi);
