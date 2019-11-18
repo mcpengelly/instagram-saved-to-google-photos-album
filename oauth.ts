@@ -1,24 +1,18 @@
-'use strict';
-
-// local
-import { clearDirectory } from './utils';
-import { IMAGE_PATH } from './constants';
-
-// stdlib
 import fs from 'fs';
-import path from 'path';
+import { google } from 'googleapis';
+import Photos from 'googlephotos';
 import http from 'http';
+import opn from 'open';
+import path from 'path';
+import destroyer from 'server-destroy';
 import url from 'url';
 
-// 2rd party
-import { google } from 'googleapis';
-import opn from 'open';
-import destroyer from 'server-destroy';
-import Photos from 'googlephotos';
+import { IMAGE_PATH } from './constants';
+import { clearDirectory } from './utils';
 
 // const plus = google.plus('v1');
 
-interface OauthKeys {
+interface IOauthKeys {
   client_id: string;
   client_secret: string;
   redirect_uris: string[];
@@ -32,7 +26,7 @@ export = {
      * download the file from there and rename it to oauth2.keys.json in the root directory
      */
     const keyPath = path.join(__dirname, 'oauth2.keys.json');
-    let keys: OauthKeys = { client_id: '', client_secret: '', redirect_uris: [''] };
+    let keys: IOauthKeys = { client_id: '', client_secret: '', redirect_uris: [''] };
     if (fs.existsSync(keyPath)) {
       keys = require(keyPath).web;
     }
@@ -54,7 +48,7 @@ export = {
         // grab the url that will be used for authorization
         const authorizeUrl = oauth2Client.generateAuthUrl({
           access_type: 'offline',
-          scope: scopes.join(' '),
+          scope: scopes.join(' ')
         });
         const server = http
           .createServer(async (req, res) => {
@@ -102,8 +96,8 @@ export = {
       const photos = getPhotos(path.join(__dirname, 'images'));
       const res = await photosApi.mediaItems.uploadMultiple(albumId, photos, path.join(__dirname, 'images'));
 
-      console.log('------------');
-      console.log(res.newMediaItemResults);
+      // console.log('------------');
+      // console.log(res.newMediaItemResults);
     };
 
     const scopes = [Photos.Scopes.READ_AND_APPEND];
@@ -113,6 +107,8 @@ export = {
       .then(async () => {
         await clearDirectory(IMAGE_PATH);
       })
-      .catch(console.error);
-  },
+      .catch(err => {
+        throw new Error(err);
+      });
+  }
 };

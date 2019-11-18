@@ -1,12 +1,7 @@
-'use strict';
-
-// stdlib
 import { createWriteStream } from 'fs';
-
-// 3rd oarty
+import { IgApiClient, SavedFeed } from 'instagram-private-api';
 import { get, has, last } from 'lodash';
 import fetch from 'node-fetch';
-import { IgApiClient, SavedFeed } from 'instagram-private-api';
 
 // You must generate device id's before login. Id's generated based on seed
 // So if you pass the same value as first argument - the same id's are generated every time
@@ -20,7 +15,7 @@ const igLogin = async (): Promise<void> => {
 
   // The same as preLoginFlow()
   // Optionally wrap it to process.nextTick so we dont need to wait ending of this bunch of requests
-  process.nextTick(async () => await ig.simulate.postLoginFlow());
+  process.nextTick(() => ig.simulate.postLoginFlow());
 };
 
 // define feed interface
@@ -58,8 +53,6 @@ const parseSavedPosts = (savedPost, includeCarouselPosts: boolean = true, includ
       return get(imgCandidate, 'url');
     }
     return;
-  } else {
-    console.log('unable to parse savedPost', savedPost);
   }
 };
 
@@ -69,20 +62,18 @@ const parseSavedPosts = (savedPost, includeCarouselPosts: boolean = true, includ
 // order is not garunteed
 const downloadImages = async (urls: any[]) => {
   let count = 1;
-  urls.forEach(async function(url) {
+  urls.forEach(async url => {
     await fetch(url)
       .then(res => {
         const dest = createWriteStream(`images/image-${count++}.png`);
         res.body.pipe(dest);
       })
       .catch(err => {
-        console.log(err);
+        throw new Error(err);
       });
   });
 };
 
-const getSavedFeed = (): SavedFeed => {
-  return ig.feed.saved();
-};
+const getSavedFeed = (): SavedFeed => ig.feed.saved();
 
 export { igLogin, getSavedFeed, getAllItemsFromFeed, parseSavedPosts, downloadImages };

@@ -1,9 +1,9 @@
-import { clearDirectory } from './utils';
-import { IMAGE_PATH } from './constants';
-import { igLogin, getAllItemsFromFeed, downloadImages, getSavedFeed, parseSavedPosts } from './insta';
-import oauth from './oauth';
-
 import { flatten } from 'lodash';
+
+import { IMAGE_PATH } from './constants';
+import { downloadImages, getAllItemsFromFeed, getSavedFeed, igLogin, parseSavedPosts } from './insta';
+import oauth from './oauth';
+import { clearDirectory } from './utils';
 
 (async () => {
   await igLogin();
@@ -14,9 +14,9 @@ import { flatten } from 'lodash';
   const imageUrls = flatten(
     savedPosts.map(item => {
       return parseSavedPosts(item, true, false);
-    }),
+    })
   ).filter((url: any) => url);
-  console.log('TCL: imageUrls.length', imageUrls.length);
+  // console.log('TCL: imageUrls.length', imageUrls.length);
 
   await downloadImages(imageUrls);
   // oauth.upload(); disabled for now cause i broke something
