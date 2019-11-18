@@ -1,24 +1,30 @@
 'use strict';
 
 // local
-const { clearDirectory } = require('./utils');
-const { IMAGE_PATH } = require('./constants');
+import { clearDirectory } from './utils';
+import { IMAGE_PATH } from './constants';
 
 // stdlib
-const fs = require('fs');
-const path = require('path');
-const http = require('http');
-const url = require('url');
+import fs from 'fs';
+import path from 'path';
+import http from 'http';
+import url from 'url';
 
 // 2rd party
-const opn = require('open');
-const destroyer = require('server-destroy');
-const { google } = require('googleapis');
-const Photos = require('googlephotos');
+import { google } from 'googleapis';
+import opn from 'open';
+import destroyer from 'server-destroy';
+import Photos from 'googlephotos';
 
-const plus = google.plus('v1');
+// const plus = google.plus('v1');
 
-module.exports = {
+interface OauthKeys {
+  client_id: string;
+  client_secret: string;
+  redirect_uris: string[];
+}
+
+export = {
   upload: () => {
     /**
      * To use OAuth2 authentication, we need access to a a CLIENT_ID, CLIENT_SECRET, AND REDIRECT_URI.
@@ -26,7 +32,7 @@ module.exports = {
      * download the file from there and rename it to oauth2.keys.json in the root directory
      */
     const keyPath = path.join(__dirname, 'oauth2.keys.json');
-    let keys = { redirect_uris: [''] };
+    let keys: OauthKeys = { client_id: '', client_secret: '', redirect_uris: [''] };
     if (fs.existsSync(keyPath)) {
       keys = require(keyPath).web;
     }

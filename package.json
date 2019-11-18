@@ -2,13 +2,19 @@
   "name": "instagram-saved-posts-images",
   "version": "1.0.0",
   "description": "Script for migrating saved posts from instagram to google photos",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.ts",
+    "build": "tsc -p ."
   },
   "author": "Matt Pengelly",
   "license": "MIT",
   "dependencies": {
+    "@types/fs-extra": "^8.0.1",
+    "@types/lodash": "^4.14.148",
+    "@types/lodash.get": "^4.4.6",
+    "@types/node-fetch": "^2.5.3",
+    "@types/server-destroy": "^1.0.0",
     "fs-extra": "^8.1.0",
     "google-auth-library": "^3.1.2",
     "googleapis": "^44.0.0",
@@ -22,11 +28,10 @@
     "url": "^0.11.0"
   },
   "devDependencies": {
-    "awesome-typescript-loader": "^5.2.1",
     "husky": ">=1",
     "lint-staged": ">=8",
     "prettier": "^1.19.1",
-    "source-map-loader": "^0.2.4",
+    "ts-node": "^8.5.2",
     "typescript": "^3.7.2"
   },
   "husky": {
