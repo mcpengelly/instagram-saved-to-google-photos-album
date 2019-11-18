@@ -20,5 +20,24 @@
     "open": "^7.0.0",
     "server-destroy": "^1.0.1",
     "url": "^0.11.0"
+  },
+  "devDependencies": {
+    "awesome-typescript-loader": "^5.2.1",
+    "husky": ">=1",
+    "lint-staged": ">=8",
+    "prettier": "^1.19.1",
+    "source-map-loader": "^0.2.4",
+    "typescript": "^3.7.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,css,json,md}": [
+      "prettier --write",
+      "git add"
+    ]
   }
 }
