@@ -33,6 +33,7 @@ This script will download a the last 40 saved photos from instagram then upload 
 - ~~upload images with google api~~
 - ~~batch uploading to google photos~~
 - better batch uploads
+- if auth fails do nothing
 
 #### ig:
 
@@ -44,3 +45,5 @@ This script will download a the last 40 saved photos from instagram then upload 
 - user friendly way of insta getting un and pw (env vars not ideal)
 - select a particular collection of saved photos on instagram (no available api?), other filter methods?
 - other types of insta feeds
+- generic getIGFeedImageUrls
+- iglogin should accept credentials

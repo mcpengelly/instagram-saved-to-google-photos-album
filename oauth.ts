@@ -7,6 +7,7 @@ import opn from 'open';
 import path from 'path';
 import destroyer from 'server-destroy';
 import url from 'url';
+import { chunk } from 'lodash';
 
 // const plus = google.plus('v1');
 
@@ -88,7 +89,16 @@ const uploadPhotos = async client => {
   const albumId = await createAlbum(photosApi);
   const photos = getPhotos(path.join(__dirname, 'images'));
   // const res =
-  await photosApi.mediaItems.uploadMultiple(albumId, photos, path.join(__dirname, 'images'));
+
+  const chunkedPhotos = chunk(photos, 50);
+  chunkedPhotos.forEach(async photoList => {
+    console.log('photoList', photoList);
+    try {
+      await photosApi.mediaItems.uploadMultiple(albumId, photoList, path.join(__dirname, 'images'));
+    } catch (err) {
+      throw new Error(err);
+    }
+  });
 
   // console.log('------------');
   // console.log(res.newMediaItemResults);
