@@ -2,7 +2,7 @@
 
 This script will download a the last 40 saved photos from instagram then upload them to google photos via google photos oauth2 api.
 
-### Motivation: wanted a fast way of downloading saved instagram pictures and uploading them to a google photos album for use with chromecast
+### Motivation: wanted a fast way of downloading saved instagram pictures and uploading them to a google photos album so I could use them with my chromecast
 
 ### How to use
 
@@ -14,35 +14,33 @@ This script will download a the last 40 saved photos from instagram then upload 
 - select/login to your google account when prompted
 - check your google photos account
 
-### todo:
+### Todo:
 
 #### general:
 
-~~delete old images~~
-
-- use typescript
-- better separation of concerns
+- ~~delete old images~~
+- ~~use prettier & linting~~
+- ~~use typescript~~
+- ~~better separation of concerns~~
+- ~~clean up after self~~
 - graceful failures
-- stream photos from one place to the other?
-- clean up after self
+- reduce disk space usage
 
 #### google photos:
 
-~~integrate with google photos api using oauth2~~
-~~user friendly way of authenticating with google~~
-~~upload images with google api~~
-~~batch uploading to google photos~~
-
-- even better batch uploading
+- ~~integrate with google photos api using oauth2~~
+- ~~user friendly way of authenticating with google~~
+- ~~upload images with google api~~
+- ~~batch uploading to google photos~~
+- better batch uploads
 
 #### ig:
 
-~~deal with videos from insta~~
-~~exhaust insta paginated photos~~
-~~deal with saved posts with more then one post in them~~
+- ~~deal with videos from insta~~
+- ~~exhaust insta paginated photos~~
+- ~~deal with saved posts with more then one post in them~~
 
-- batch downloading from insta (fix overloading node queue, deal with broken urls)
+- batch downloading from insta (fix overloading node queue)
 - user friendly way of insta getting un and pw (env vars not ideal)
-- select a particular collection of saved photos on instagram (no available api?)
-- transfer other types of insta data
-- filter insta photos?
+- select a particular collection of saved photos on instagram (no available api?), other filter methods?
+- other types of insta feeds

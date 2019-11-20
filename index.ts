@@ -1,8 +1,9 @@
+import { AuthPlus } from 'googleapis-common';
 import { flatten } from 'lodash';
 
 import { IMAGE_PATH } from './constants';
 import { downloadImages, getAllItemsFromFeed, getSavedFeed, igLogin, parseSavedPosts } from './insta';
-import oauth from './oauth';
+import { getGoogleOauthClient, uploadPhotos } from './oauth';
 import { clearDirectory } from './utils';
 
 (async () => {
@@ -19,5 +20,7 @@ import { clearDirectory } from './utils';
   // console.log('TCL: imageUrls.length', imageUrls.length);
 
   await downloadImages(imageUrls);
-  oauth.upload();
+  const client = await getGoogleOauthClient();
+  await uploadPhotos(client);
+  await clearDirectory(IMAGE_PATH);
 })();
