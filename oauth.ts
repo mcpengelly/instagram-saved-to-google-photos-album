@@ -1,15 +1,12 @@
 import fs from 'fs';
 import { google } from 'googleapis';
-import { AuthPlus } from 'googleapis-common';
 import Photos from 'googlephotos';
 import http from 'http';
+import { chunk } from 'lodash';
 import opn from 'open';
 import path from 'path';
 import destroyer from 'server-destroy';
 import url from 'url';
-import { chunk } from 'lodash';
-
-// const plus = google.plus('v1');
 
 interface IOauthKeys {
   client_id: string;
@@ -88,20 +85,15 @@ const uploadPhotos = async client => {
   const photosApi = new Photos(token);
   const albumId = await createAlbum(photosApi);
   const photos = getPhotos(path.join(__dirname, 'images'));
-  // const res =
 
-  const chunkedPhotos = chunk(photos, 50);
-  chunkedPhotos.forEach(async photoList => {
-    console.log('photoList', photoList);
+  const batchedPhotos = chunk(photos, 50);
+  batchedPhotos.forEach(async photoList => {
     try {
       await photosApi.mediaItems.uploadMultiple(albumId, photoList, path.join(__dirname, 'images'));
     } catch (err) {
       throw new Error(err);
     }
   });
-
-  // console.log('------------');
-  // console.log(res.newMediaItemResults);
 };
 
 export { getGoogleOauthClient, uploadPhotos };
