@@ -86,14 +86,11 @@ const uploadPhotos = async client => {
   const albumId = await createAlbum(photosApi);
   const photos = getPhotos(path.join(__dirname, 'images'));
 
-  const batchedPhotos = chunk(photos, 50);
-  batchedPhotos.forEach(async photoList => {
-    try {
-      await photosApi.mediaItems.uploadMultiple(albumId, photoList, path.join(__dirname, 'images'));
-    } catch (err) {
-      throw new Error(err);
-    }
-  });
+  try {
+    await photosApi.mediaItems.uploadMultiple(albumId, photos, path.join(__dirname, 'images'));
+  } catch (err) {
+    throw new Error(err);
+  }
 };
 
 export { getGoogleOauthClient, uploadPhotos };

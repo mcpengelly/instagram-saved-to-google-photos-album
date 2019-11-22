@@ -5,16 +5,19 @@ import { clearDirectory } from './utils';
 
 (async () => {
   try {
+    // setup
     await clearDirectory(IMAGE_PATH);
     await igLogin();
 
-    // get saved posts
+    // download IG posts
     const savedFeedImageUrls = await getIGFeedImageUrls(getSavedFeed());
-    // console.log('TCL: savedImageUrls.length', savedImageUrls.length);
-
     await downloadImages(savedFeedImageUrls);
+
+    // upload to google album
     const client = await getGoogleOauthClient();
     await uploadPhotos(client);
+
+    // clean up
     await clearDirectory(IMAGE_PATH);
   } catch (err) {
     throw new Error(err);

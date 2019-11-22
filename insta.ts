@@ -1,6 +1,6 @@
 import { createWriteStream } from 'fs';
 import { IgApiClient, SavedFeed } from 'instagram-private-api';
-import { flatten, get, has, last } from 'lodash';
+import { chunk, flatten, get, has, last } from 'lodash';
 import fetch from 'node-fetch';
 
 // You must generate device id's before login. Id's generated based on seed
@@ -26,14 +26,9 @@ const getIGFeedImageUrls = async (feed: SavedFeed) => {
   do {
     count++;
     items = items.concat(await feed.items());
-  } while (feed.isMoreAvailable() && count < 7);
+  } while (feed.isMoreAvailable());
 
-  const posts = flatten(
-    items.map(item => {
-      return parseSavedPost(item, true, false);
-    })
-  ).filter((url: any) => url);
-
+  const posts = flatten(items.map(item => parseSavedPost(item, true, false))).filter(url => url);
   return posts;
 };
 
@@ -70,15 +65,17 @@ const parseSavedPost = (savedPost, includeCarouselPosts: boolean = true, include
 // order is not garunteed
 const downloadImages = async (urls: any[]) => {
   let count = 1;
-  urls.forEach(async url => {
-    await fetch(url)
-      .then(res => {
+  const groupedURLS = chunk(urls, 350);
+  groupedURLS.forEach(async group => {
+  for (const url of group) {
+      try {
+        const res = await fetch(url);
         const dest = createWriteStream(`images/image-${count++}.png`);
         res.body.pipe(dest);
-      })
-      .catch(err => {
+      } catch (err) {
         throw new Error(err);
-      });
+      }
+    }
   });
 };
 

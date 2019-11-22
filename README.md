@@ -32,18 +32,18 @@ This script will download a the last 40 saved photos from instagram then upload 
 - ~~user friendly way of authenticating with google~~
 - ~~upload images with google api~~
 - ~~batch uploading to google photos~~
-- better batch uploads
-- if auth fails do nothing
+- ~~better batch uploads~~
+- is there a way around google max requests per minute for uploads?
 
 #### ig:
 
 - ~~deal with videos from insta~~
 - ~~exhaust insta paginated photos~~
 - ~~deal with saved posts with more then one post in them~~
+- ~~batch downloading from insta (fix overloading node queue)~~
 
-- batch downloading from insta (fix overloading node queue)
-- user friendly way of insta getting un and pw (env vars not ideal)
+- iglogin should accept credentials
+- user friendly way of insta getting un and pw (use node args)
 - select a particular collection of saved photos on instagram (no available api?), other filter methods?
 - other types of insta feeds
 - generic getIGFeedImageUrls
-- iglogin should accept credentials
