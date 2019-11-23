@@ -25,6 +25,7 @@ This script will download a the last 40 saved photos from instagram then upload 
 - ~~clean up after self~~
 - graceful failures
 - reduce disk space usage
+- global install/usage
 
 #### google photos:
 
@@ -43,7 +44,7 @@ This script will download a the last 40 saved photos from instagram then upload 
 - ~~batch downloading from insta (fix overloading node queue)~~
 
 - iglogin should accept credentials
-- user friendly way of insta getting un and pw (use node args)
+- user friendly way of insta getting un and pw (use node args? read from untracked file?)
 - select a particular collection of saved photos on instagram (no available api?), other filter methods?
 - other types of insta feeds
 - generic getIGFeedImageUrls
