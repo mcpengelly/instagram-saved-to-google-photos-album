@@ -24,6 +24,7 @@
     "googleapis-common": "^3.1.1",
     "googlephotos": "^0.2.4",
     "http": "^0.0.0",
+    "inquirer": "^7.0.0",
     "instagram-private-api": "^1.13.0",
     "lodash": "^4.17.15",
     "node-fetch": "^2.6.0",

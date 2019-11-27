@@ -1,4 +1,5 @@
 import { createWriteStream } from 'fs';
+import inquirer from 'inquirer'
 import { IgApiClient, SavedFeed } from 'instagram-private-api';
 import { chunk, flatten, get, has, last } from 'lodash';
 import fetch from 'node-fetch';
@@ -12,8 +13,20 @@ const igLogin = async (): Promise<void> => {
   ig.state.generateDevice(process.env.IG_USERNAME);
 
   // login with credentials
-  const loggedInUser = await ig.account.login(process.env.IG_USERNAME, process.env.IG_PASSWORD);
-
+  try {
+    await ig.account.login(process.env.IG_USERNAME, process.env.IG_PASSWORD);
+  } catch (err){
+    await ig.challenge.auto(true); // Requesting sms-code or click "It was me" button
+    console.log(ig.state.checkpoint); // Challenge info here
+    const { code } = await inquirer.prompt([
+      {
+        type: 'input',
+        name: 'code',
+        message: 'Enter code',
+      },
+    ]);
+    await ig.challenge.sendSecurityCode(code)
+  }
   // The same as preLoginFlow()
   // Optionally wrap it to process.nextTick so we dont need to wait ending of this bunch of requests
   process.nextTick(() => ig.simulate.postLoginFlow());
@@ -26,7 +39,7 @@ const getIGFeedImageUrls = async (feed: SavedFeed) => {
   do {
     count++;
     items = items.concat(await feed.items());
-  } while (feed.isMoreAvailable());
+  } while (feed.isMoreAvailable() && count < 6);
 
   const posts = flatten(items.map(item => parseSavedPost(item, true, false))).filter(url => url);
   return posts;
