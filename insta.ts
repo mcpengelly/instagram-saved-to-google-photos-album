@@ -17,12 +17,12 @@ const igLogin = async (): Promise<void> => {
     await ig.account.login(process.env.IG_USERNAME, process.env.IG_PASSWORD);
   } catch (err){
     await ig.challenge.auto(true); // Requesting sms-code or click "It was me" button
-    console.log(ig.state.checkpoint); // Challenge info here
+    console.log(ig.state.checkpoint);
     const { code } = await inquirer.prompt([
       {
-        type: 'input',
-        name: 'code',
         message: 'Enter code',
+        name: 'code',
+        type: 'input',
       },
     ]);
     await ig.challenge.sendSecurityCode(code)
