@@ -11,11 +11,15 @@ const ig = new IgApiClient();
 // TODO: pass credentials in here
 const igLogin = async (): Promise<void> => {
   ig.state.generateDevice(process.env.IG_USERNAME);
-
+  
   // login with credentials
   try {
+    await ig.qe.syncLoginExperiments();
+
     await ig.account.login(process.env.IG_USERNAME, process.env.IG_PASSWORD);
+
   } catch (err){
+    console.log(err);
     await ig.challenge.auto(true); // Requesting sms-code or click "It was me" button
     console.log(ig.state.checkpoint);
     const { code } = await inquirer.prompt([
@@ -27,8 +31,6 @@ const igLogin = async (): Promise<void> => {
     ]);
     await ig.challenge.sendSecurityCode(code)
   }
-  // The same as preLoginFlow()
-  // Optionally wrap it to process.nextTick so we dont need to wait ending of this bunch of requests
   process.nextTick(() => ig.simulate.postLoginFlow());
 };
 
@@ -39,7 +41,7 @@ const getIGFeedImageUrls = async (feed: SavedFeed) => {
   do {
     count++;
     items = items.concat(await feed.items());
-  } while (feed.isMoreAvailable() && count < 6);
+  } while (feed.isMoreAvailable() && count < 20);
 
   const posts = flatten(items.map(item => parseSavedPost(item, true, false))).filter(url => url);
   return posts;
@@ -78,11 +80,12 @@ const parseSavedPost = (savedPost, includeCarouselPosts: boolean = true, include
 // order is not garunteed
 const downloadImages = async (urls: any[]) => {
   let count = 1;
-  const groupedURLS = chunk(urls, 350);
+  const groupedURLS = chunk(urls, 5);
   groupedURLS.forEach(async group => {
-  for (const url of group) {
+    for (const url of group) {
       try {
-        const res = await fetch(url);
+        console.log(`fetching image ${count}`)
+        const res = await fetch(url, {timeout: 10000});
         const dest = createWriteStream(`images/image-${count++}.png`);
         res.body.pipe(dest);
       } catch (err) {

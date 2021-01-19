@@ -1,7 +1,15 @@
 {
   "web": {
-    "client_id": "YOU CLIENT ID- you can download the contents of this file from google oauth APIs",
-    "client_secret": "YOUR CLIENT SECRET",
-    "redirect_uris": ["YOUR REDIRECT URLS"]
+    "client_id": "5775087294-e7ktt9215purmtgniu21shofh6j1m692.apps.googleusercontent.com",
+    "project_id": "insta-to-cast",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_secret": "9wp1GV44lEX12vYjWrdRjxJK",
+    "redirect_uris": [
+      "http://localhost:8080",
+      "http://localhost:8080/oauth2callback"
+    ],
+    "javascript_origins": ["http://localhost"]
   }
 }
