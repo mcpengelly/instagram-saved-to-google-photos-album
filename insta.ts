@@ -1,36 +1,38 @@
-import { createWriteStream } from 'fs';
-import inquirer from 'inquirer'
-import { IgApiClient, SavedFeed } from 'instagram-private-api';
-import { chunk, flatten, get, has, last } from 'lodash';
-import fetch from 'node-fetch';
+import { createWriteStream } from "fs";
+import inquirer from "inquirer";
+import { IgApiClient, SavedFeed } from "instagram-private-api";
+import { chunk, flatten, get, has, last } from "lodash";
+import axios from "axios";
 
-// You must generate device id's before login. Id's generated based on seed
-// So if you pass the same value as first argument - the same id's are generated every time
+// user arguments
+const includeCarouselPosts = process.argv[2];
+const includeVideoPosts = process.argv[3];
+
 const ig = new IgApiClient();
 
-// TODO: pass credentials in here
 const igLogin = async (): Promise<void> => {
   ig.state.generateDevice(process.env.IG_USERNAME);
-  
-  // login with credentials
+
   try {
+    // get password encryption key
     await ig.qe.syncLoginExperiments();
 
     await ig.account.login(process.env.IG_USERNAME, process.env.IG_PASSWORD);
-
-  } catch (err){
+  } catch (err) {
     console.log(err);
-    await ig.challenge.auto(true); // Requesting sms-code or click "It was me" button
+    await ig.challenge.auto(true); // sometimes instagram wants to verify you're human
     console.log(ig.state.checkpoint);
     const { code } = await inquirer.prompt([
       {
-        message: 'Enter code',
-        name: 'code',
-        type: 'input',
+        message: "Enter code",
+        name: "code",
+        type: "input",
       },
     ]);
-    await ig.challenge.sendSecurityCode(code)
+    await ig.challenge.sendSecurityCode(code);
   }
+
+  // dispose of password encryption key
   process.nextTick(() => ig.simulate.postLoginFlow());
 };
 
@@ -41,57 +43,69 @@ const getIGFeedImageUrls = async (feed: SavedFeed) => {
   do {
     count++;
     items = items.concat(await feed.items());
-  } while (feed.isMoreAvailable() && count < 20);
+  } while (feed.isMoreAvailable() && count < 10);
 
-  const posts = flatten(items.map(item => parseSavedPost(item, true, false))).filter(url => url);
+  const posts = flatten(
+    items.map((item) =>
+      parseSavedPost(item, !!includeCarouselPosts, !!includeVideoPosts)
+    )
+  ).filter((url) => url);
   return posts;
 };
 
 // grab all image urls from a batch of saved posts
 // the final candidate in the list seems to be the most reliable in terms of height and width so use that.
-const parseSavedPost = (savedPost, includeCarouselPosts: boolean = true, includeVideoPosts: boolean = false) => {
-  const isVideoPost = has(savedPost, 'video_codec');
-  const isImagePost = has(savedPost, 'image_versions2.candidates') && !isVideoPost;
-  const isCarouselPost = has(savedPost, 'carousel_media') && !isVideoPost;
+// TODO: find most reliable candidates for images
+const parseSavedPost = (
+  savedPost,
+  includeCarouselPosts: boolean = true,
+  includeVideoPosts: boolean = false
+) => {
+  const isVideoPost = has(savedPost, "video_codec");
+  const isImagePost =
+    has(savedPost, "image_versions2.candidates") && !isVideoPost;
+  const isCarouselPost = has(savedPost, "carousel_media") && !isVideoPost;
 
   if (isImagePost) {
-    const imgCandidate = last(get(savedPost, 'image_versions2.candidates'));
-    return get(imgCandidate, 'url');
+    const imgCandidate = last(get(savedPost, "image_versions2.candidates"));
+    return get(imgCandidate, "url");
   } else if (isCarouselPost) {
     if (includeCarouselPosts) {
-      return get(savedPost, 'carousel_media').map(post => {
-        const imgCandidate = last(get(post, 'image_versions2.candidates'));
-        return get(imgCandidate, 'url');
+      return get(savedPost, "carousel_media").map((post) => {
+        const imgCandidate = last(get(post, "image_versions2.candidates"));
+        return get(imgCandidate, "url");
       });
     }
     return;
   } else if (isVideoPost) {
     if (includeVideoPosts) {
-      const imgCandidate = last(get(savedPost, 'image_versions2.candidates'));
-      return get(imgCandidate, 'url');
+      const imgCandidate = last(get(savedPost, "image_versions2.candidates"));
+      return get(imgCandidate, "url");
     }
     return;
   }
 };
 
 // fetch images from image urls and save them to disk
-// batch? need to free up node queue for large amounts of requests
-// parralelize?
-// order is not garunteed
 const downloadImages = async (urls: any[]) => {
   let count = 1;
-  const groupedURLS = chunk(urls, 5);
-  groupedURLS.forEach(async group => {
-    for (const url of group) {
+
+  const groupedURLS = chunk(urls, 10);
+  groupedURLS.forEach(async (group) => {
+    group.forEach(async (url) => {
       try {
-        console.log(`fetching image ${count}`)
-        const res = await fetch(url, {timeout: 10000});
+        console.log(`fetching image...`);
+        const res = await axios.get(url, {
+          timeout: 2000,
+          responseType: "stream",
+        });
         const dest = createWriteStream(`images/image-${count++}.png`);
-        res.body.pipe(dest);
+        console.log(`saved image ${count} from instagram`);
+        res.data.pipe(dest);
       } catch (err) {
-        throw new Error(err);
+        console.log(`error fetching url ${err.code}`);
       }
-    }
+    });
   });
 };
 

@@ -23,6 +23,13 @@ This script will download a the last 40 saved photos from instagram then upload 
 - ~~use typescript~~
 - ~~better separation of concerns~~
 - ~~clean up after self~~
+- ~~axios for fetching~~
+- document IG_USERNAME, IG_PASSWORD
+- better usage docs
+- better error messages
+- more user friendly script
+- separate ig download into own module?
+- document user arguments
 - graceful failures
 - reduce disk space usage
 - global install/usage
@@ -42,8 +49,12 @@ This script will download a the last 40 saved photos from instagram then upload 
 - ~~exhaust insta paginated photos~~
 - ~~deal with saved posts with more then one post in them~~
 - ~~batch downloading from insta (fix overloading node queue)~~
-
+- batch large amount of requests (instagram)
+- ensure each group completes download before moving onto the next group (instagram)
+- user arguments for allowing video or carousel images to show up
 - iglogin should accept credentials
+- make video posts optional by flag
+- make carousel posts optional by flag
 - user friendly way of insta getting un and pw (use node args? read from untracked file?)
 - select a particular collection of saved photos on instagram (no available api?), other filter methods?
 - other types of insta feeds

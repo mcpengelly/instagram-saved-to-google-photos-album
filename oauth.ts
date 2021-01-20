@@ -2,7 +2,6 @@ import fs from 'fs';
 import { google } from 'googleapis';
 import Photos from 'googlephotos';
 import http from 'http';
-import { chunk } from 'lodash';
 import opn from 'open';
 import path from 'path';
 import destroyer from 'server-destroy';
@@ -46,7 +45,7 @@ const getGoogleOauthClient = async (scopes = [Photos.Scopes.READ_AND_APPEND]) =>
         try {
           if (req.url.indexOf('/oauth2callback') > -1) {
             const qs = new url.URL(req.url, 'http://localhost:8080').searchParams;
-            res.end('Authentication successful! Please return to the console.');
+            res.end('Google Oauth2 Authentication successful! Please return to the console.');
             server.destroy();
             const { tokens } = await oauth2Client.getToken(qs.get('code'));
             oauth2Client.credentials = tokens; // eslint-disable-line require-atomic-updates
@@ -65,8 +64,10 @@ const getGoogleOauthClient = async (scopes = [Photos.Scopes.READ_AND_APPEND]) =>
 };
 
 const createAlbum = async photosApi => {
+  console.log('creating target google album')
   const titleDate = `${new Date().toDateString()} ${new Date().toTimeString().slice(0, 8)}`;
   const newAlbum = await photosApi.albums.create(titleDate);
+  console.log(`new album created with id ${newAlbum.id}`)
   return newAlbum.id;
 };
 
@@ -86,6 +87,7 @@ const uploadPhotos = async client => {
   const albumId = await createAlbum(photosApi);
   const photos = getPhotos(path.join(__dirname, 'images'));
 
+  console.log('attempting to upload to google photos')
   try {
     await photosApi.mediaItems.uploadMultiple(albumId, photos, path.join(__dirname, 'images'));
   } catch (err) {
