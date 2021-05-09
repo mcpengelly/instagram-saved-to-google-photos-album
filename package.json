@@ -28,7 +28,7 @@
     "http": "^0.0.0",
     "inquirer": "^7.0.0",
     "instagram-private-api": "^1.13.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "node-fetch": "^2.6.0",
     "open": "^7.0.0",
     "server-destroy": "^1.0.1",
