@@ -8,7 +8,8 @@
     "build": "tsc -p .",
     "runjs": "node ./lib/index.js",
     "lint": "tslint --project .",
-    "refresh": "rm -rf node_modules && yarn install"
+    "refresh": "rm -rf node_modules && yarn install",
+    "prepare": "husky install"
   },
   "author": "Matt Pengelly",
   "license": "MIT",
@@ -36,23 +37,9 @@
     "url": "^0.11.0"
   },
   "devDependencies": {
-    "husky": ">=1",
-    "lint-staged": ">=8",
     "prettier": "^2.2.1",
     "ts-node": "^8.5.2",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.7.2"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "pre-push": "yarn lint"
-    }
-  },
-  "lint-staged": {
-    "*.{js,css,json,md}": [
-      "prettier --write",
-      "git add"
-    ]
   }
 }

@@ -1,12 +1,12 @@
+import axios from "axios";
 import { createWriteStream } from "fs";
 import inquirer from "inquirer";
 import { IgApiClient, SavedFeed } from "instagram-private-api";
 import { chunk, flatten, get, has, last } from "lodash";
-import axios from "axios";
 
 // user arguments
-const includeCarouselPosts = process.argv[2];
-const includeVideoPosts = process.argv[3];
+const includeCarousels = process.argv[2];
+const includeVideos = process.argv[3];
 
 const ig = new IgApiClient();
 
@@ -16,10 +16,9 @@ const igLogin = async (): Promise<void> => {
   try {
     // get password encryption key
     await ig.qe.syncLoginExperiments();
-
     await ig.account.login(process.env.IG_USERNAME, process.env.IG_PASSWORD);
   } catch (err) {
-    console.log(err);
+    console.error(err);
     await ig.challenge.auto(true); // sometimes instagram wants to verify you're human
     console.log(ig.state.checkpoint);
     const { code } = await inquirer.prompt([
@@ -33,7 +32,7 @@ const igLogin = async (): Promise<void> => {
   }
 
   // dispose of password encryption key
-  process.nextTick(() => ig.simulate.postLoginFlow());
+  // process.nextTick(() => ig.simulate.postLoginFlow());
 };
 
 // TODO: make generic, accepts function/boolean for parsing different types of feeds
@@ -47,7 +46,7 @@ const getIGFeedImageUrls = async (feed: SavedFeed) => {
 
   const posts = flatten(
     items.map((item) =>
-      parseSavedPost(item, !!includeCarouselPosts, !!includeVideoPosts)
+      parseSavedPost(item, !!includeCarousels, !!includeVideos)
     )
   ).filter((url) => url);
   return posts;
@@ -96,14 +95,14 @@ const downloadImages = async (urls: any[]) => {
       try {
         console.log(`fetching image...`);
         const res = await axios.get(url, {
-          timeout: 2000,
           responseType: "stream",
+          timeout: 2000,
         });
         const dest = createWriteStream(`images/image-${count++}.png`);
         console.log(`saved image ${count} from instagram`);
         res.data.pipe(dest);
       } catch (err) {
-        console.log(`error fetching url ${err.code}`);
+        console.error(`error fetching url ${err.code}`);
       }
     });
   });
