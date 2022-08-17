@@ -32,7 +32,7 @@ const igLogin = async (): Promise<void> => {
   }
 
   // dispose of password encryption key
-  process.nextTick(() => ig.simulate.postLoginFlow());
+  // process.nextTick(() => ig.simulate.postLoginFlow());
 };
 
 // TODO: make generic, accepts function/boolean for parsing different types of feeds
