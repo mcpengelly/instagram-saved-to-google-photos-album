@@ -4,15 +4,21 @@ This script will download a the last 40 saved photos from instagram then upload 
 
 ### Motivation: wanted a fast way of downloading saved instagram pictures and uploading them to a google photos album so I could use them with my chromecast
 
-### How to use
+### Setup
 
-- add your insta username and password to your .bash_profile
+- add your insta username and password to your shell profile. under the names: IG_USERNAME, IG_PASSWORD (dont worry this info is only used to fetch your profiles bookmarked images and not saved.)
 - create an app here: https://console.cloud.google.com/apis/credentials get oauth credentials, download the credentials file and paste it into oauth2.keys.json
 - enable google photos API
-- install dependencies `npm install`
-- run `npm start`
-- select/login to your google account when prompted
-- check your google photos account
+- install project dependencies `npm install`
+
+### Usage
+
+Disclaimer, this script will make requests to Instagram servers on your behalf, it's advised that you _do not_ use your personal account in case Instagram tags you as a bot for repeated requests.
+
+- start the script with `npm start`
+- optionally you can choose to download videos and carousels using these args: `npm start <shouldDownloadCarouselImages> <shouldDownloadVideos>` ex: `npm start true true`
+- you'll be prompted for your google login to do the upload in a browser, complete that.
+- check your google photos account for a new album, or check <project>/images/ for images saved to disk
 
 ### Todo:
 
@@ -24,12 +30,12 @@ This script will download a the last 40 saved photos from instagram then upload 
 - ~~better separation of concerns~~
 - ~~clean up after self~~
 - ~~axios for fetching~~
-- document IG_USERNAME, IG_PASSWORD
-- better usage docs
-- better error messages
+- ~~document IG_USERNAME, IG_PASSWORD~~
+- ~~better usage docs~~
+- remove hotfix from node_modules
+- better error messages, graceful warning for no password/un supplied
 - more user friendly script
 - separate ig download into own module?
-- document user arguments
 - graceful failures
 - reduce disk space usage
 - global install/usage

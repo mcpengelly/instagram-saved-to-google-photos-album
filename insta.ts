@@ -16,10 +16,9 @@ const igLogin = async (): Promise<void> => {
   try {
     // get password encryption key
     await ig.qe.syncLoginExperiments();
-
     await ig.account.login(process.env.IG_USERNAME, process.env.IG_PASSWORD);
   } catch (err) {
-    console.log(err);
+    console.error(err);
     await ig.challenge.auto(true); // sometimes instagram wants to verify you're human
     console.log(ig.state.checkpoint);
     const { code } = await inquirer.prompt([
@@ -103,7 +102,7 @@ const downloadImages = async (urls: any[]) => {
         console.log(`saved image ${count} from instagram`);
         res.data.pipe(dest);
       } catch (err) {
-        console.log(`error fetching url ${err.code}`);
+        console.error(`error fetching url ${err.code}`);
       }
     });
   });
