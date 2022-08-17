@@ -1,12 +1,12 @@
+import axios from "axios";
 import { createWriteStream } from "fs";
 import inquirer from "inquirer";
 import { IgApiClient, SavedFeed } from "instagram-private-api";
 import { chunk, flatten, get, has, last } from "lodash";
-import axios from "axios";
 
 // user arguments
-const includeCarouselPosts = process.argv[2];
-const includeVideoPosts = process.argv[3];
+const includeCarousels = process.argv[2];
+const includeVideos = process.argv[3];
 
 const ig = new IgApiClient();
 
@@ -46,7 +46,7 @@ const getIGFeedImageUrls = async (feed: SavedFeed) => {
 
   const posts = flatten(
     items.map((item) =>
-      parseSavedPost(item, !!includeCarouselPosts, !!includeVideoPosts)
+      parseSavedPost(item, !!includeCarousels, !!includeVideos)
     )
   ).filter((url) => url);
   return posts;
@@ -95,8 +95,8 @@ const downloadImages = async (urls: any[]) => {
       try {
         console.log(`fetching image...`);
         const res = await axios.get(url, {
-          timeout: 2000,
           responseType: "stream",
+          timeout: 2000,
         });
         const dest = createWriteStream(`images/image-${count++}.png`);
         console.log(`saved image ${count} from instagram`);
